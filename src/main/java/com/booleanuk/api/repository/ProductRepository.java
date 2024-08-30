@@ -33,6 +33,10 @@ public class ProductRepository {
         for (Product p : this.products) {
             if (p.getCategory().toLowerCase().equals(category)) toReturn.add(p);
         }
+
+        // Check if no products with the given category were found
+        if (toReturn.isEmpty()) return null;
+
         return toReturn;
     }
 

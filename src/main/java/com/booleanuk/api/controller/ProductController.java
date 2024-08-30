@@ -30,8 +30,13 @@ public class ProductController {
     @GetMapping
     public ArrayList<Product> getAll(@RequestBody(required = false) Product productWithCategory) {
         String givenCategory = "";
-        if (productWithCategory != null) givenCategory = productWithCategory.getCategory();
-        return this.productRepository.getAll(givenCategory);
+        if (productWithCategory != null) {
+            givenCategory = productWithCategory.getCategory();
+            ArrayList<Product> toReturn = this.productRepository.getAll(givenCategory);
+            if (toReturn == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        return this.productRepository.getAll(null);
     }
 
     @GetMapping("{id}")
