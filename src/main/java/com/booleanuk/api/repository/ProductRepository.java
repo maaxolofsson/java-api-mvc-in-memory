@@ -12,6 +12,11 @@ public class ProductRepository {
         this.products = new ArrayList<Product>();
     }
 
+    public Product add(Product newProduct) {
+        this.products.add(newProduct);
+        return newProduct;
+    }
+
     public ArrayList<Product> getAll() {
         return this.products;
     }
@@ -22,6 +27,23 @@ public class ProductRepository {
         return toReturn;
     }
 
-    
+    public Product update(int id, Product newProduct) {
+        Product toReturn = null;
+
+        for (int i = 0; i < this.products.size(); ++i) {
+            Product currentProduct = this.products.get(i);
+            if (currentProduct.getId() == id) {
+                currentProduct.setCategory(newProduct.getCategory());
+                currentProduct.setName(newProduct.getName());
+                currentProduct.setPrice(newProduct.getPrice());
+            }
+        }
+
+        return toReturn;
+    }
+
+    public Product remove(int id) {
+        return this.products.remove(id);
+    }
 
 }
