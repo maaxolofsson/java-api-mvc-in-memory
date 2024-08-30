@@ -13,6 +13,8 @@ public class Product {
         this.name = name;
         this.category = category;
         this.price = price;
+        this.id = idManager;
+        idManager++;
     }
 
     public Product() {
