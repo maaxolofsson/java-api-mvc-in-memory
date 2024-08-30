@@ -36,4 +36,9 @@ public class ProductController {
         return this.productRepository.update(id, newProductData);
     }
 
+    @DeleteMapping("{id}")
+    public Product delete(@PathVariable int id) {
+        return this.productRepository.remove(id);
+    }
+
 }

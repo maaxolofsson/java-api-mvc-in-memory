@@ -47,7 +47,15 @@ public class ProductRepository {
     }
 
     public Product remove(int id) {
-        return this.products.remove(id);
+        Product toReturn = null;
+        for (int i = 0; i < this.products.size(); ++i) {
+            if (this.products.get(i).getId() == id) {
+                toReturn = this.products.get(i);
+                this.products.remove(i);
+                break;
+            }
+        }
+        return toReturn;
     }
 
 }
