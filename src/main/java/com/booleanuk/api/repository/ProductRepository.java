@@ -39,6 +39,7 @@ public class ProductRepository {
                 currentProduct.setCategory(newProduct.getCategory());
                 currentProduct.setName(newProduct.getName());
                 currentProduct.setPrice(newProduct.getPrice());
+                toReturn = currentProduct;
             }
         }
 

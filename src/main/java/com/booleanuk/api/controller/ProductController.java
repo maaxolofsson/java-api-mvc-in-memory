@@ -26,4 +26,14 @@ public class ProductController {
         return this.productRepository.getAll();
     }
 
+    @GetMapping("{id}")
+    public Product getOne(@PathVariable int id) {
+        return this.productRepository.getOne(id);
+    }
+
+    @PutMapping("{id}")
+    public Product updateProduct(@PathVariable int id, @RequestBody Product newProductData) {
+        return this.productRepository.update(id, newProductData);
+    }
+
 }
