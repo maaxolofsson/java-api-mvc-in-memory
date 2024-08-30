@@ -1,7 +1,10 @@
-package com.booleanuk.api.bagels.model;
+package com.booleanuk.api.model;
 
 public class Product {
 
+    public static int idManager = 1;
+
+    private int id;
     private String name;
     private String category;
     private int price;
@@ -14,6 +17,14 @@ public class Product {
 
     public Product() {
 
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
