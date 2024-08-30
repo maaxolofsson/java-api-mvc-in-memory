@@ -2,6 +2,7 @@ package com.booleanuk.api.controller;
 
 import com.booleanuk.api.model.Product;
 import com.booleanuk.api.repository.ProductRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class ProductController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED) // 201 code
     public Product create(@RequestBody Product newProduct) {
         return this.productRepository.add(newProduct);
     }
@@ -32,6 +34,7 @@ public class ProductController {
     }
 
     @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.CREATED) // 201 code
     public Product updateProduct(@PathVariable int id, @RequestBody Product newProductData) {
         return this.productRepository.update(id, newProductData);
     }
