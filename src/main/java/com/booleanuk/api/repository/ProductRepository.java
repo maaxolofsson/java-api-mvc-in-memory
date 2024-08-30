@@ -20,8 +20,17 @@ public class ProductRepository {
                 findFirst().orElse(null);
     }
 
-    public ArrayList<Product> getAll() {
-        return this.products;
+    public ArrayList<Product> getAll(String category) {
+        if (category == null || category.isEmpty()) {
+            return this.products;
+        }
+
+        category = category.toLowerCase();
+        ArrayList<Product> toReturn = new ArrayList<>();
+        for (Product p : this.products) {
+            if (p.getCategory().toLowerCase().equals(category)) toReturn.add(p);
+        }
+        return toReturn;
     }
 
     public Product getOne(int id) {

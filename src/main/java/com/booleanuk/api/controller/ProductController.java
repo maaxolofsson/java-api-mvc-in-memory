@@ -2,6 +2,7 @@ package com.booleanuk.api.controller;
 
 import com.booleanuk.api.model.Product;
 import com.booleanuk.api.repository.ProductRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +25,10 @@ public class ProductController {
     }
 
     @GetMapping
-    public ArrayList<Product> getAll() {
-        return this.productRepository.getAll();
+    public ArrayList<Product> getAll(@RequestBody(required = false) Product productWithCategory) {
+        String givenCategory = "";
+        if (productWithCategory != null) givenCategory = productWithCategory.getCategory();
+        return this.productRepository.getAll(givenCategory);
     }
 
     @GetMapping("{id}")
