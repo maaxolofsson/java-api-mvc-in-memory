@@ -1,5 +1,8 @@
 package com.booleanuk.api.repository;
 
+import com.booleanuk.api.exceptions.NoProductsInCategoryException;
+import com.booleanuk.api.exceptions.ProductNameExistsException;
+import com.booleanuk.api.exceptions.ProductNotFoundException;
 import com.booleanuk.api.model.Product;
 
 import java.util.ArrayList;
@@ -14,13 +17,13 @@ public class ProductRepository {
 
     public Product add(Product newProduct) {
         // Check if name exists, if it does return null
-        for (Product p : this.products) if (p.getName().equals(newProduct.getName())) return null;
+        for (Product p : this.products)
+            if (p.getName().equals(newProduct.getName()))
+                throw new ProductNameExistsException("Given product name already exists.");
 
         Product actualNewProduct = new Product(newProduct.getName(), newProduct.getCategory(), newProduct.getPrice());
         this.products.add(actualNewProduct);
-        return this.products.stream().
-                filter(product -> product.getId() == actualNewProduct.getId()).
-                findFirst().orElse(null);
+        return actualNewProduct;
     }
 
     public ArrayList<Product> getAll(String category) {
@@ -35,31 +38,34 @@ public class ProductRepository {
         }
 
         // Check if no products with the given category were found
-        if (toReturn.isEmpty()) return null;
+        if (toReturn.isEmpty()) throw new NoProductsInCategoryException("No products exist in the given category.");
 
         return toReturn;
     }
 
     public Product getOne(int id) {
-        return this.products.stream().
-                filter(author -> author.getId() == id).
-                findFirst().orElse(null);
+        Product product = null;
+        for (Product p : this.products) if (p.getId() == id) return p;
+        throw new ProductNotFoundException("Given product ID does not exist.");
     }
 
     public Product update(int id, Product newProduct) {
-        Product toReturn = null;
+        Product actualProduct = null;
+        for (Product p : this.products) if (p.getId() == id) actualProduct = p;
 
-        for (int i = 0; i < this.products.size(); ++i) {
-            Product currentProduct = this.products.get(i);
-            if (currentProduct.getId() == id) {
-                currentProduct.setCategory(newProduct.getCategory());
-                currentProduct.setName(newProduct.getName());
-                currentProduct.setPrice(newProduct.getPrice());
-                toReturn = currentProduct;
-            }
-        }
+        // Check if given product id exists
+        if (actualProduct == null) throw new ProductNotFoundException("Product ID not found.");
 
-        return toReturn;
+        // Check if given product name exists
+        for (Product p : this.products)
+            if (p.getName().equals(newProduct.getName()))
+                throw new ProductNameExistsException("Given product name already exists.");
+
+        actualProduct.setCategory(newProduct.getCategory());
+        actualProduct.setName(newProduct.getName());
+        actualProduct.setPrice(newProduct.getPrice());
+
+        return actualProduct;
     }
 
     public Product remove(int id) {
@@ -68,10 +74,10 @@ public class ProductRepository {
             if (this.products.get(i).getId() == id) {
                 toReturn = this.products.get(i);
                 this.products.remove(i);
-                break;
+                return toReturn;
             }
         }
-        return toReturn;
+        throw new ProductNotFoundException("Given product ID does not exist.");
     }
 
 }

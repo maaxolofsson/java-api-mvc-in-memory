@@ -1,5 +1,8 @@
 package com.booleanuk.api.controller;
 
+import com.booleanuk.api.exceptions.NoProductsInCategoryException;
+import com.booleanuk.api.exceptions.ProductNameExistsException;
+import com.booleanuk.api.exceptions.ProductNotFoundException;
 import com.booleanuk.api.model.Product;
 import com.booleanuk.api.repository.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,39 +25,68 @@ public class ProductController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // 201 code
     public Product create(@RequestBody Product newProduct) {
-        Product added = this.productRepository.add(newProduct);
-        if (added != null) return added;
-        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        Product toAdd = null;
+
+        try {
+            toAdd = this.productRepository.add(newProduct);
+        } catch (ProductNameExistsException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        return toAdd;
     }
 
     @GetMapping
     public ArrayList<Product> getAll(@RequestBody(required = false) Product productWithCategory) {
+        ArrayList<Product> toReturn = null;
         String givenCategory = "";
         if (productWithCategory != null) {
             givenCategory = productWithCategory.getCategory();
-            ArrayList<Product> toReturn = this.productRepository.getAll(givenCategory);
-            if (toReturn == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            try {
+                toReturn = this.productRepository.getAll(givenCategory);
+            } catch (NoProductsInCategoryException e) {
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            toReturn = this.productRepository.getAll(null);
         }
-
-        return this.productRepository.getAll(null);
+        return toReturn;
     }
 
     @GetMapping("{id}")
     public Product getOne(@PathVariable int id) {
-        Product toReturn = this.productRepository.getOne(id);
-        if (toReturn != null) return toReturn;
-        else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Product toReturn = null;
+        try {
+            toReturn = this.productRepository.getOne(id);
+        } catch (ProductNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return toReturn;
     }
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.CREATED) // 201 code
     public Product updateProduct(@PathVariable int id, @RequestBody Product newProductData) {
-        return this.productRepository.update(id, newProductData);
+        Product updatedProduct = null;
+        try {
+            updatedProduct = this.productRepository.update(id, newProductData);
+        } catch (ProductNameExistsException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        } catch (ProductNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return updatedProduct;
     }
 
     @DeleteMapping("{id}")
     public Product delete(@PathVariable int id) {
-        return this.productRepository.remove(id);
+        Product actualProduct = null;
+        try {
+            actualProduct = this.productRepository.remove(id);
+        } catch (ProductNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return actualProduct;
     }
 
 }
