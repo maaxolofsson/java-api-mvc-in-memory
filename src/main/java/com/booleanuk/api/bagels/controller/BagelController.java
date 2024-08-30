@@ -1,4 +1,7 @@
-package com.booleanuk.api.bagels;
+package com.booleanuk.api.bagels.controller;
+
+import com.booleanuk.api.bagels.model.Bagel;
+import com.booleanuk.api.bagels.repository.BagelRepository;
 
 import java.util.List;
 
