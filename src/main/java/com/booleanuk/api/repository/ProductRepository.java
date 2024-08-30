@@ -9,12 +9,15 @@ public class ProductRepository {
     private ArrayList<Product> products;
 
     public ProductRepository() {
-        this.products = new ArrayList<Product>();
+        this.products = new ArrayList<>();
     }
 
     public Product add(Product newProduct) {
-        this.products.add(newProduct);
-        return newProduct;
+        Product actualNewProduct = new Product(newProduct.getName(), newProduct.getCategory(), newProduct.getPrice());
+        this.products.add(actualNewProduct);
+        return this.products.stream().
+                filter(product -> product.getId() == actualNewProduct.getId()).
+                findFirst().orElse(null);
     }
 
     public ArrayList<Product> getAll() {
