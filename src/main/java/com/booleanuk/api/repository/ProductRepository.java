@@ -13,6 +13,9 @@ public class ProductRepository {
     }
 
     public Product add(Product newProduct) {
+        // Check if name exists, if it does return null
+        for (Product p : this.products) if (p.getName().equals(newProduct.getName())) return null;
+
         Product actualNewProduct = new Product(newProduct.getName(), newProduct.getCategory(), newProduct.getPrice());
         this.products.add(actualNewProduct);
         return this.products.stream().
@@ -34,9 +37,9 @@ public class ProductRepository {
     }
 
     public Product getOne(int id) {
-        Product toReturn = null;
-        for (Product p : this.products) if (p.getId() == id) toReturn = p;
-        return toReturn;
+        return this.products.stream().
+                filter(author -> author.getId() == id).
+                findFirst().orElse(null);
     }
 
     public Product update(int id, Product newProduct) {

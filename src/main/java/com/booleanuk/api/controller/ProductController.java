@@ -5,6 +5,7 @@ import com.booleanuk.api.repository.ProductRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 
@@ -21,7 +22,9 @@ public class ProductController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // 201 code
     public Product create(@RequestBody Product newProduct) {
-        return this.productRepository.add(newProduct);
+        Product added = this.productRepository.add(newProduct);
+        if (added != null) return added;
+        else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping
@@ -33,7 +36,9 @@ public class ProductController {
 
     @GetMapping("{id}")
     public Product getOne(@PathVariable int id) {
-        return this.productRepository.getOne(id);
+        Product toReturn = this.productRepository.getOne(id);
+        if (toReturn != null) return toReturn;
+        else throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("{id}")
